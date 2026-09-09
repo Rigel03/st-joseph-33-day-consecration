@@ -116,6 +116,71 @@ export const DailyReader: React.FC = () => {
     })
     .filter(Boolean);
 
+  const renderContentBlock = (para: string, idx: number) => {
+    if (para === '[[EDITORIAL_NOTE]]') {
+      return (
+        <div
+          key={idx}
+          className="my-4 py-2 px-3.5 rounded-lg border border-dashed border-amber-300/80 bg-amber-50/70 dark:border-neutral-700 dark:bg-neutral-800/50 text-xs italic text-amber-900/90 dark:text-amber-300/90 flex items-center gap-2 font-serif select-none"
+        >
+          <Sparkles className="h-3.5 w-3.5 shrink-0 text-amber-700 dark:text-amber-400" />
+          <span>Decorative small-caps emphasis motto (omitted in source scan)</span>
+        </div>
+      );
+    }
+
+    if (para.startsWith('>')) {
+      const rawLines = para.split('\n').map((l) => l.replace(/^>\s*/, '').trim()).filter(Boolean);
+      let attribution = '';
+      const quoteLines: string[] = [];
+
+      rawLines.forEach((line) => {
+        if (/^[—–-]\s*[A-Z]/.test(line)) {
+          attribution = line;
+        } else {
+          quoteLines.push(line);
+        }
+      });
+
+      return (
+        <blockquote
+          key={idx}
+          className="my-5 rounded-r-2xl border-l-4 border-amber-600 bg-amber-500/8 dark:border-amber-500 dark:bg-amber-500/10 px-5 py-4 shadow-2xs font-serif transition-colors"
+        >
+          <div className="text-sm md:text-[15.5px] leading-relaxed italic text-stone-900 dark:text-stone-100 space-y-1">
+            {quoteLines.map((line, lIdx) => (
+              <p key={lIdx} className="m-0 leading-relaxed text-left">
+                {line}
+              </p>
+            ))}
+          </div>
+          {attribution && (
+            <div className="mt-2.5 text-right font-serif not-italic text-xs md:text-sm font-bold tracking-wide text-amber-900 dark:text-amber-300">
+              {attribution}
+            </div>
+          )}
+        </blockquote>
+      );
+    }
+
+    if (para.startsWith('**') && para.endsWith('**')) {
+      return (
+        <h3
+          key={idx}
+          className="font-cinzel text-lg md:text-xl font-bold text-amber-950 dark:text-amber-200 pt-4 pb-1"
+        >
+          {para.replace(/\*\*/g, '')}
+        </h3>
+      );
+    }
+
+    return (
+      <p key={idx} className="leading-relaxed text-left mb-4">
+        {para}
+      </p>
+    );
+  };
+
   return (
     <div className="mx-auto max-w-3xl px-4 py-6 md:py-10" ref={readerContainerRef}>
       <HighlightPopover containerRef={readerContainerRef} section={activeSection} />
@@ -257,44 +322,7 @@ export const DailyReader: React.FC = () => {
         {/* TAB 1: Meditation */}
         {activeSection === 'meditation' && (
           <div className="space-y-4 animate-in fade-in duration-150 text-stone-900 dark:text-stone-100">
-            {dailyEntry.reflection.split('\n\n').map((para, idx) => {
-              if (para === '[[EDITORIAL_NOTE]]') {
-                return (
-                  <div
-                    key={idx}
-                    className="my-3 py-2 px-3.5 rounded-lg border border-dashed border-amber-300/80 bg-amber-50/70 dark:border-neutral-700 dark:bg-neutral-800/50 text-xs italic text-amber-900/90 dark:text-amber-300/90 flex items-center gap-2 font-serif select-none"
-                  >
-                    <Sparkles className="h-3.5 w-3.5 shrink-0 text-amber-700 dark:text-amber-400" />
-                    <span>Decorative small-caps emphasis motto (omitted in source scan)</span>
-                  </div>
-                );
-              }
-              if (para.startsWith('> *') || para.startsWith('> ')) {
-                return (
-                  <blockquote
-                    key={idx}
-                    className="border-l-4 border-amber-700 bg-amber-100/40 dark:bg-neutral-800/60 pl-4 py-2 italic text-stone-900 dark:text-stone-100 rounded-r-lg my-4 font-serif"
-                  >
-                    {para.replace(/^>\s*\*?|\*?$/g, '')}
-                  </blockquote>
-                );
-              }
-              if (para.startsWith('**') && para.endsWith('**')) {
-                return (
-                  <h3
-                    key={idx}
-                    className="font-cinzel text-lg md:text-xl font-bold text-amber-950 dark:text-amber-200 pt-3"
-                  >
-                    {para.replace(/\*\*/g, '')}
-                  </h3>
-                );
-              }
-              return (
-                <p key={idx} className="leading-relaxed text-justify">
-                  {para}
-                </p>
-              );
-            })}
+            {dailyEntry.reflection.split('\n\n').map(renderContentBlock)}
 
             {/* Prompt to move to Reading */}
             {dailyEntry.reading && (
@@ -323,20 +351,7 @@ export const DailyReader: React.FC = () => {
               </h2>
             </div>
 
-            {dailyEntry.reading.content.split('\n\n').map((para, idx) => {
-              if (para.startsWith('—') || para.startsWith('–') || para.startsWith('- ')) {
-                return (
-                  <div key={idx} className="font-serif italic text-sm font-semibold text-amber-950 dark:text-amber-300 pl-4 border-l-2 border-amber-600/60 my-2">
-                    {para}
-                  </div>
-                );
-              }
-              return (
-                <p key={idx} className="leading-relaxed text-justify">
-                  {para}
-                </p>
-              );
-            })}
+            {dailyEntry.reading.content.split('\n\n').map(renderContentBlock)}
 
             <div className="mt-8 pt-4 border-t border-stone-300/80 dark:border-neutral-800 flex justify-end no-print">
               <button
