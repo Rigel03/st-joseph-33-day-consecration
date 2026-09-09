@@ -122,6 +122,7 @@ export interface DevotionalExtrasData {
 export type ThemeMode = 'sanctuary' | 'sepia' | 'vigil';
 export type FontFamily = 'serif' | 'sans';
 export type FontSize = 'sm' | 'base' | 'lg' | 'xl';
+export type TextAlign = 'left' | 'justify' | 'right';
 export type HighlightColor = 'gold' | 'rose' | 'emerald' | 'azure';
 
 export interface TextHighlight {
@@ -137,6 +138,7 @@ export interface UserSettings {
   theme: ThemeMode;
   font: FontFamily;
   fontSize: FontSize;
+  textAlign: TextAlign;
   autoPlaySpeech: boolean;
   speechRate: number;
   speechPitch: number;

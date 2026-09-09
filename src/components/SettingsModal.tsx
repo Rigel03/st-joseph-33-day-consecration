@@ -1,11 +1,11 @@
 // src/components/SettingsModal.tsx
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
-import { X, Settings as SettingsIcon, Sun, Moon, Book, Bell } from 'lucide-react';
+import { X, Settings as SettingsIcon, Sun, Moon, Book, Bell, AlignLeft, AlignJustify, AlignRight } from 'lucide-react';
 import type { FontSize } from '../types';
 
 export const SettingsModal: React.FC = () => {
-  const { modals, closeModal, settings, updateSettings, setTheme, setFont, setFontSize } = useApp();
+  const { modals, closeModal, settings, updateSettings, setTheme, setFont, setFontSize, setTextAlign } = useApp();
   const [notificationStatus, setNotificationStatus] = useState<string>(
     typeof window !== 'undefined' && 'Notification' in window ? Notification.permission : 'unsupported'
   );
@@ -138,6 +138,50 @@ export const SettingsModal: React.FC = () => {
                   {sz === 'sm' ? 'Small' : sz === 'base' ? 'Normal' : sz === 'lg' ? 'Large' : 'Huge'}
                 </button>
               ))}
+            </div>
+          </div>
+
+          {/* Text Alignment */}
+          <div>
+            <label className="text-xs font-semibold uppercase tracking-wider text-stone-500 dark:text-stone-400 block mb-2.5">
+              Text Alignment
+            </label>
+            <div className="grid grid-cols-3 gap-2">
+              <button
+                onClick={() => setTextAlign('left')}
+                className={`flex items-center justify-center gap-1.5 rounded-xl border p-2.5 text-xs font-medium transition-all ${
+                  (settings.textAlign || 'left') === 'left'
+                    ? 'border-amber-600 bg-amber-50 text-amber-950 font-bold ring-2 ring-amber-500/20 dark:bg-neutral-800 dark:text-amber-200'
+                    : 'border-stone-200 hover:bg-stone-50 text-stone-700 dark:border-neutral-800 dark:text-stone-300'
+                }`}
+              >
+                <AlignLeft className="h-4 w-4 text-amber-700 dark:text-amber-400" />
+                <span>Left</span>
+              </button>
+
+              <button
+                onClick={() => setTextAlign('justify')}
+                className={`flex items-center justify-center gap-1.5 rounded-xl border p-2.5 text-xs font-medium transition-all ${
+                  settings.textAlign === 'justify'
+                    ? 'border-amber-600 bg-amber-50 text-amber-950 font-bold ring-2 ring-amber-500/20 dark:bg-neutral-800 dark:text-amber-200'
+                    : 'border-stone-200 hover:bg-stone-50 text-stone-700 dark:border-neutral-800 dark:text-stone-300'
+                }`}
+              >
+                <AlignJustify className="h-4 w-4 text-amber-700 dark:text-amber-400" />
+                <span>Justify</span>
+              </button>
+
+              <button
+                onClick={() => setTextAlign('right')}
+                className={`flex items-center justify-center gap-1.5 rounded-xl border p-2.5 text-xs font-medium transition-all ${
+                  settings.textAlign === 'right'
+                    ? 'border-amber-600 bg-amber-50 text-amber-950 font-bold ring-2 ring-amber-500/20 dark:bg-neutral-800 dark:text-amber-200'
+                    : 'border-stone-200 hover:bg-stone-50 text-stone-700 dark:border-neutral-800 dark:text-stone-300'
+                }`}
+              >
+                <AlignRight className="h-4 w-4 text-amber-700 dark:text-amber-400" />
+                <span>Right</span>
+              </button>
             </div>
           </div>
 

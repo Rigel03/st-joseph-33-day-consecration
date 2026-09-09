@@ -12,6 +12,7 @@ export const defaultSettings: UserSettings = {
   theme: 'sanctuary',
   font: 'serif',
   fontSize: 'base',
+  textAlign: 'left',
   autoPlaySpeech: false,
   speechRate: 0.95,
   speechPitch: 1.0,

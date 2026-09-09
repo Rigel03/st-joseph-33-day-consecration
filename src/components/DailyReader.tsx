@@ -14,13 +14,16 @@ import {
   BookOpen,
   HeartHandshake,
   ScrollText,
-  StickyNote
+  StickyNote,
+  AlignLeft,
+  AlignJustify,
+  AlignRight
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { LitanyView } from './LitanyView';
 import { HighlightPopover } from './HighlightPopover';
 import prayersData from '../data/prayers.json';
-import type { PrayersDatabase } from '../types';
+import type { PrayersDatabase, TextHighlight, HighlightColor, TextAlign } from '../types';
 
 export const DailyReader: React.FC = () => {
   const {
@@ -31,10 +34,13 @@ export const DailyReader: React.FC = () => {
     activeSection,
     setActiveSection,
     settings,
+    setTextAlign,
     isDayCompleted,
     markDayCompleted,
     isBookmarked,
     toggleBookmark,
+    highlights,
+    removeHighlight,
     openModal,
     setShareData,
     playSpeech,
@@ -116,6 +122,98 @@ export const DailyReader: React.FC = () => {
     })
     .filter(Boolean);
 
+  // Current section highlights
+  const currentSectionHighlights = highlights.filter(
+    (h) => h.day === currentDay && h.section === activeSection
+  );
+
+  const getHighlightClass = (color: HighlightColor) => {
+    switch (color) {
+      case 'gold':
+        return 'bg-amber-300/60 dark:bg-amber-400/35 text-stone-950 dark:text-amber-100 border-b-2 border-amber-500/60';
+      case 'rose':
+        return 'bg-rose-300/60 dark:bg-rose-400/35 text-stone-950 dark:text-rose-100 border-b-2 border-rose-500/60';
+      case 'emerald':
+        return 'bg-emerald-300/60 dark:bg-emerald-400/35 text-stone-950 dark:text-emerald-100 border-b-2 border-emerald-500/60';
+      case 'azure':
+        return 'bg-sky-300/60 dark:bg-sky-400/35 text-stone-950 dark:text-sky-100 border-b-2 border-sky-500/60';
+    }
+  };
+
+  const renderWithHighlights = (content: string): React.ReactNode => {
+    if (!content || currentSectionHighlights.length === 0) return content;
+
+    const matches: { start: number; end: number; highlight: TextHighlight }[] = [];
+
+    for (const h of currentSectionHighlights) {
+      if (!h.text || !h.text.trim()) continue;
+      const target = h.text.trim();
+      let idx = content.indexOf(target);
+      while (idx !== -1) {
+        matches.push({
+          start: idx,
+          end: idx + target.length,
+          highlight: h,
+        });
+        idx = content.indexOf(target, idx + 1);
+      }
+    }
+
+    if (matches.length === 0) return content;
+
+    // Sort by start position; longer match first if tie
+    matches.sort((a, b) => a.start - b.start || (b.end - b.start) - (a.end - a.start));
+
+    // Exclude overlaps
+    const nonOverlapping: typeof matches = [];
+    let lastEnd = 0;
+    for (const m of matches) {
+      if (m.start >= lastEnd) {
+        nonOverlapping.push(m);
+        lastEnd = m.end;
+      }
+    }
+
+    const nodes: React.ReactNode[] = [];
+    let lastIdx = 0;
+
+    for (let i = 0; i < nonOverlapping.length; i++) {
+      const m = nonOverlapping[i];
+      if (m.start > lastIdx) {
+        nodes.push(content.slice(lastIdx, m.start));
+      }
+      const highlightedSnippet = content.slice(m.start, m.end);
+      nodes.push(
+        <mark
+          key={`${m.highlight.id}_${i}`}
+          className={`cursor-pointer rounded-xs px-1 py-0.5 transition-all hover:opacity-80 ${getHighlightClass(m.highlight.color)}`}
+          title={`Highlight (${m.highlight.color}) • Click to remove`}
+          onClick={(e) => {
+            e.stopPropagation();
+            if (window.confirm('Remove this highlight?')) {
+              removeHighlight(m.highlight.id);
+            }
+          }}
+        >
+          {highlightedSnippet}
+        </mark>
+      );
+      lastIdx = m.end;
+    }
+
+    if (lastIdx < content.length) {
+      nodes.push(content.slice(lastIdx));
+    }
+
+    return <>{nodes}</>;
+  };
+
+  const textAlignClass = {
+    left: 'text-left',
+    justify: 'text-justify',
+    right: 'text-right',
+  }[settings.textAlign || 'left'];
+
   const renderContentBlock = (para: string, idx: number) => {
     if (para === '[[EDITORIAL_NOTE]]') {
       return (
@@ -149,8 +247,8 @@ export const DailyReader: React.FC = () => {
         >
           <div className="text-sm md:text-[15.5px] leading-relaxed italic text-stone-900 dark:text-stone-100 space-y-1">
             {quoteLines.map((line, lIdx) => (
-              <p key={lIdx} className="m-0 leading-relaxed text-left">
-                {line}
+              <p key={lIdx} className={`m-0 leading-relaxed ${textAlignClass}`}>
+                {renderWithHighlights(line)}
               </p>
             ))}
           </div>
@@ -175,8 +273,8 @@ export const DailyReader: React.FC = () => {
     }
 
     return (
-      <p key={idx} className="leading-relaxed text-left mb-4">
-        {para}
+      <p key={idx} className={`leading-relaxed ${textAlignClass} mb-4`}>
+        {renderWithHighlights(para)}
       </p>
     );
   };
@@ -232,6 +330,23 @@ export const DailyReader: React.FC = () => {
             ) : (
               <Bookmark className="h-4 w-4" />
             )}
+          </button>
+
+          <button
+            onClick={() => {
+              const order: Record<TextAlign, TextAlign> = {
+                left: 'justify',
+                justify: 'right',
+                right: 'left',
+              };
+              setTextAlign(order[settings.textAlign || 'left']);
+            }}
+            className="rounded-lg border border-stone-300 bg-white/80 p-1.5 text-stone-800 hover:bg-amber-100/60 dark:border-neutral-700 dark:bg-neutral-800 dark:text-stone-200 transition-colors"
+            title={`Alignment: ${settings.textAlign || 'left'} (click to cycle Left / Justify / Right)`}
+          >
+            {(settings.textAlign || 'left') === 'left' && <AlignLeft className="h-4 w-4 text-amber-800 dark:text-amber-400" />}
+            {settings.textAlign === 'justify' && <AlignJustify className="h-4 w-4 text-amber-800 dark:text-amber-400" />}
+            {settings.textAlign === 'right' && <AlignRight className="h-4 w-4 text-amber-800 dark:text-amber-400" />}
           </button>
 
           <button

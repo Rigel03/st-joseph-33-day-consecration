@@ -8,7 +8,8 @@ import type {
   DailyEntry,
   ThemeMode,
   FontFamily,
-  FontSize
+  FontSize,
+  TextAlign
 } from '../types';
 import {
   loadSettings,
@@ -41,6 +42,7 @@ interface AppContextType {
   setTheme: (theme: ThemeMode) => void;
   setFont: (font: FontFamily) => void;
   setFontSize: (size: FontSize) => void;
+  setTextAlign: (align: TextAlign) => void;
 
   // Progress
   progress: UserProgress;
@@ -171,6 +173,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const setTheme = useCallback((theme: ThemeMode) => updateSettings({ theme }), [updateSettings]);
   const setFont = useCallback((font: FontFamily) => updateSettings({ font }), [updateSettings]);
   const setFontSize = useCallback((fontSize: FontSize) => updateSettings({ fontSize }), [updateSettings]);
+  const setTextAlign = useCallback((textAlign: TextAlign) => updateSettings({ textAlign }), [updateSettings]);
 
   // Progress & Completion
   const markDayCompleted = useCallback((day: number, completed: boolean) => {
@@ -384,6 +387,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         setTheme,
         setFont,
         setFontSize,
+        setTextAlign,
         progress,
         markDayCompleted,
         isDayCompleted,
