@@ -106,9 +106,13 @@ export const DailyReader: React.FC = () => {
   // Find additional prayers if any
   const additionalPrayersList = (dailyEntry.prayer.additional_prayers || [])
     .map((prayerId) => {
-      const act = prayersDb.actsOfConsecration.find((p) => p.id === prayerId);
+      const match = (id: string) =>
+        id === prayerId ||
+        id === prayerId.replace(/_/g, '-') ||
+        id === prayerId.replace(/-/g, '_');
+      const act = prayersDb.actsOfConsecration.find((p) => match(p.id));
       if (act) return act;
-      return prayersDb.devotionalPrayers.find((p) => p.id === prayerId);
+      return prayersDb.devotionalPrayers.find((p) => match(p.id));
     })
     .filter(Boolean);
 
@@ -254,6 +258,17 @@ export const DailyReader: React.FC = () => {
         {activeSection === 'meditation' && (
           <div className="space-y-4 animate-in fade-in duration-150 text-stone-900 dark:text-stone-100">
             {dailyEntry.reflection.split('\n\n').map((para, idx) => {
+              if (para === '[[EDITORIAL_NOTE]]') {
+                return (
+                  <div
+                    key={idx}
+                    className="my-3 py-2 px-3.5 rounded-lg border border-dashed border-amber-300/80 bg-amber-50/70 dark:border-neutral-700 dark:bg-neutral-800/50 text-xs italic text-amber-900/90 dark:text-amber-300/90 flex items-center gap-2 font-serif select-none"
+                  >
+                    <Sparkles className="h-3.5 w-3.5 shrink-0 text-amber-700 dark:text-amber-400" />
+                    <span>Decorative small-caps emphasis motto (omitted in source scan)</span>
+                  </div>
+                );
+              }
               if (para.startsWith('> *') || para.startsWith('> ')) {
                 return (
                   <blockquote
@@ -308,11 +323,20 @@ export const DailyReader: React.FC = () => {
               </h2>
             </div>
 
-            {dailyEntry.reading.content.split('\n\n').map((para, idx) => (
-              <p key={idx} className="leading-relaxed text-justify">
-                {para}
-              </p>
-            ))}
+            {dailyEntry.reading.content.split('\n\n').map((para, idx) => {
+              if (para.startsWith('—') || para.startsWith('–') || para.startsWith('- ')) {
+                return (
+                  <div key={idx} className="font-serif italic text-sm font-semibold text-amber-950 dark:text-amber-300 pl-4 border-l-2 border-amber-600/60 my-2">
+                    {para}
+                  </div>
+                );
+              }
+              return (
+                <p key={idx} className="leading-relaxed text-justify">
+                  {para}
+                </p>
+              );
+            })}
 
             <div className="mt-8 pt-4 border-t border-stone-300/80 dark:border-neutral-800 flex justify-end no-print">
               <button
