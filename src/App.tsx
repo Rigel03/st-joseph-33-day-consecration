@@ -12,12 +12,13 @@ import { NotesBookmarksModal } from './components/NotesBookmarksModal';
 import { SettingsModal } from './components/SettingsModal';
 import { ShareModal } from './components/ShareModal';
 import { PrayersModal } from './components/PrayersModal';
+import { MobileBottomNav } from './components/MobileBottomNav';
 
 export const AppContent: React.FC = () => {
   return (
     <div className="min-h-screen flex flex-col selection:bg-amber-200 dark:selection:bg-amber-800">
       <Header />
-      <main className="flex-1 pb-16">
+      <main className="flex-1 pb-24 md:pb-16">
         <DailyQuoteBanner />
         <DailyReader />
       </main>
@@ -37,7 +38,8 @@ export const AppContent: React.FC = () => {
         </div>
       </footer>
 
-      {/* Audio Bar & Floating Modals */}
+      {/* Mobile Bottom Navigation Bar & Audio Bar */}
+      <MobileBottomNav />
       <AudioBar />
       <SearchModal />
       <CalendarModal />

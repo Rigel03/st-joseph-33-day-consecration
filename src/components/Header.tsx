@@ -27,30 +27,34 @@ export const Header: React.FC = () => {
     <header className="sticky top-0 z-30 border-b border-amber-200/50 bg-stone-50/90 backdrop-blur-md dark:border-neutral-800 dark:bg-stone-950/90 no-print transition-colors">
       <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
         {/* Left: Brand / Title */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
           <img
             src="/st-joseph-circle.jpg"
             alt="St. Joseph"
-            className="h-10 w-10 rounded-full object-cover shadow-md ring-2 ring-amber-600/40 hover:scale-105 transition-transform"
+            className="h-9 w-9 sm:h-10 sm:w-10 rounded-full object-cover shadow-md ring-2 ring-amber-600/40 hover:scale-105 transition-transform flex-shrink-0"
           />
-          <div>
-            <h2 className="font-cinzel text-sm sm:text-base font-bold tracking-wide text-amber-950 dark:text-amber-100 leading-tight">
+          <div className="min-w-0">
+            <h2 className="font-cinzel text-xs xs:text-sm sm:text-base font-bold tracking-tight text-amber-950 dark:text-amber-100 leading-snug truncate">
               Consecration to St. Joseph
             </h2>
-            <div className="flex items-center gap-2 text-[11px] text-stone-500 dark:text-stone-400">
-              <span>Day {currentDay} of {totalDays}</span>
+            <button
+              onClick={() => openModal('calendar')}
+              className="flex items-center gap-1.5 text-[11px] text-stone-500 dark:text-stone-400 hover:text-amber-800 dark:hover:text-amber-300 transition-colors text-left"
+              title="Click to change day or view calendar"
+            >
+              <span className="font-medium whitespace-nowrap">Day {currentDay} of {totalDays}</span>
               <span>•</span>
-              <span className="font-medium text-amber-700 dark:text-amber-400">{completionPercentage}% Completed</span>
+              <span className="font-semibold text-amber-700 dark:text-amber-400 whitespace-nowrap">{completionPercentage}% Done</span>
               {progress.streak > 0 && (
-                <span className="inline-flex items-center gap-0.5 text-orange-600 dark:text-orange-400 font-semibold">
-                  <Flame className="h-3 w-3 fill-current" /> {progress.streak}d streak
+                <span className="hidden xs:inline-flex items-center gap-0.5 text-orange-600 dark:text-orange-400 font-semibold whitespace-nowrap">
+                  <Flame className="h-3 w-3 fill-current" /> {progress.streak}d
                 </span>
               )}
-            </div>
+            </button>
           </div>
         </div>
 
-        {/* Center: Day Picker Dropdown */}
+        {/* Center: Day Picker Dropdown (Tablet & Desktop) */}
         <div className="relative hidden md:block">
           <select
             value={currentDay}
@@ -66,8 +70,8 @@ export const Header: React.FC = () => {
           <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-stone-500" />
         </div>
 
-        {/* Right: Quick Action Modals */}
-        <div className="flex items-center gap-1 sm:gap-1.5">
+        {/* Right: Quick Action Modals (Desktop: full set, Mobile: Search & Settings) */}
+        <div className="flex items-center gap-1 sm:gap-1.5 flex-shrink-0">
           <button
             onClick={() => openModal('search')}
             className="rounded-lg p-2 text-stone-600 hover:bg-amber-100/60 hover:text-amber-900 dark:text-stone-300 dark:hover:bg-neutral-800 transition-colors"
@@ -76,9 +80,10 @@ export const Header: React.FC = () => {
             <Search className="h-4 w-4" />
           </button>
 
+          {/* Desktop-only action buttons (on mobile, accessible via sleek bottom nav) */}
           <button
             onClick={() => openModal('calendar')}
-            className="rounded-lg p-2 text-stone-600 hover:bg-amber-100/60 hover:text-amber-900 dark:text-stone-300 dark:hover:bg-neutral-800 transition-colors"
+            className="hidden md:inline-flex rounded-lg p-2 text-stone-600 hover:bg-amber-100/60 hover:text-amber-900 dark:text-stone-300 dark:hover:bg-neutral-800 transition-colors"
             title="Consecration Schedule & Calendar"
           >
             <Calendar className="h-4 w-4" />
@@ -86,7 +91,7 @@ export const Header: React.FC = () => {
 
           <button
             onClick={() => openModal('prayersModal')}
-            className="rounded-lg p-2 text-stone-600 hover:bg-amber-100/60 hover:text-amber-900 dark:text-stone-300 dark:hover:bg-neutral-800 transition-colors"
+            className="hidden md:inline-flex rounded-lg p-2 text-stone-600 hover:bg-amber-100/60 hover:text-amber-900 dark:text-stone-300 dark:hover:bg-neutral-800 transition-colors"
             title="Prayers Treasury & Acts of Consecration"
           >
             <Scroll className="h-4 w-4" />
@@ -94,7 +99,7 @@ export const Header: React.FC = () => {
 
           <button
             onClick={() => openModal('library')}
-            className="rounded-lg p-2 text-stone-600 hover:bg-amber-100/60 hover:text-amber-900 dark:text-stone-300 dark:hover:bg-neutral-800 transition-colors"
+            className="hidden md:inline-flex rounded-lg p-2 text-stone-600 hover:bg-amber-100/60 hover:text-amber-900 dark:text-stone-300 dark:hover:bg-neutral-800 transition-colors"
             title="Know St. Joseph: Titles, Shrines, Champions"
           >
             <BookOpen className="h-4 w-4" />
@@ -102,7 +107,7 @@ export const Header: React.FC = () => {
 
           <button
             onClick={() => openModal('notesBookmarks')}
-            className="rounded-lg p-2 text-stone-600 hover:bg-amber-100/60 hover:text-amber-900 dark:text-stone-300 dark:hover:bg-neutral-800 transition-colors"
+            className="hidden md:inline-flex rounded-lg p-2 text-stone-600 hover:bg-amber-100/60 hover:text-amber-900 dark:text-stone-300 dark:hover:bg-neutral-800 transition-colors"
             title="Bookmarks, Highlights & Notes"
           >
             <BookmarkCheck className="h-4 w-4" />

@@ -18,7 +18,7 @@ export const AudioBar: React.FC = () => {
   };
 
   return (
-    <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 w-[92%] max-w-md animate-in fade-in slide-in-from-bottom-4 duration-200">
+    <div className="fixed bottom-16 md:bottom-4 left-1/2 -translate-x-1/2 z-40 w-[92%] max-w-md animate-in fade-in slide-in-from-bottom-4 duration-200">
       <div className="flex items-center justify-between gap-3 rounded-full border border-amber-300/80 bg-stone-900/95 px-4 py-2.5 text-stone-100 shadow-xl backdrop-blur-md dark:border-amber-500/40">
         <div className="flex items-center gap-2.5 overflow-hidden">
           <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-amber-600/30 text-amber-400">

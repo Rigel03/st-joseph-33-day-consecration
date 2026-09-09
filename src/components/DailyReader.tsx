@@ -214,15 +214,26 @@ export const DailyReader: React.FC = () => {
     right: 'text-right',
   }[settings.textAlign || 'left'];
 
-  const renderContentBlock = (para: string, idx: number) => {
-    if (para === '[[EDITORIAL_NOTE]]') {
+  // Helper to remove OCR-glitched footnote numbers (e.g., "saint.1" -> "saint.", "Increase.”2" -> "Increase.”")
+  const cleanFootnotes = (text: string): string => {
+    if (!text) return text;
+    return text
+      .replace(/([.,!?;:'"”])\d+(?=[.,!?;:'"”\s]|$)/g, '$1')
+      .replace(/([a-zA-Z]{2,})\d+(?=[.,!?;:'"”\s]|$)/g, '$1');
+  };
+
+  const renderContentBlock = (rawPara: string, idx: number) => {
+    const para = cleanFootnotes(rawPara.trim());
+    if (!para) return null;
+
+    if (rawPara === '[[EDITORIAL_NOTE]]') {
       return (
-        <div
-          key={idx}
-          className="my-4 py-2 px-3.5 rounded-lg border border-dashed border-amber-300/80 bg-amber-50/70 dark:border-neutral-700 dark:bg-neutral-800/50 text-xs italic text-amber-900/90 dark:text-amber-300/90 flex items-center gap-2 font-serif select-none"
-        >
-          <Sparkles className="h-3.5 w-3.5 shrink-0 text-amber-700 dark:text-amber-400" />
-          <span>Decorative small-caps emphasis motto (omitted in source scan)</span>
+        <div key={idx} className="my-6 flex items-center justify-center gap-3 select-none no-print">
+          <div className="h-px w-12 sm:w-16 bg-amber-300/70 dark:bg-neutral-700" />
+          <span className="font-cinzel text-xs uppercase tracking-widest text-amber-900/80 dark:text-amber-400/80 font-bold">
+            ✠ Ite Ad Ioseph ✠
+          </span>
+          <div className="h-px w-12 sm:w-16 bg-amber-300/70 dark:bg-neutral-700" />
         </div>
       );
     }
@@ -243,7 +254,7 @@ export const DailyReader: React.FC = () => {
       return (
         <blockquote
           key={idx}
-          className="my-5 rounded-r-2xl border-l-4 border-amber-600 bg-amber-500/8 dark:border-amber-500 dark:bg-amber-500/10 px-5 py-4 shadow-2xs font-serif transition-colors"
+          className="my-4 sm:my-5 rounded-r-2xl border-l-4 border-amber-600 bg-amber-500/8 dark:border-amber-500 dark:bg-amber-500/10 px-4 sm:px-5 py-3 sm:py-4 shadow-2xs font-serif transition-colors"
         >
           <div className="text-sm md:text-[15.5px] leading-relaxed italic text-stone-900 dark:text-stone-100 space-y-1">
             {quoteLines.map((line, lIdx) => (
@@ -253,7 +264,7 @@ export const DailyReader: React.FC = () => {
             ))}
           </div>
           {attribution && (
-            <div className="mt-2.5 text-right font-serif not-italic text-xs md:text-sm font-bold tracking-wide text-amber-900 dark:text-amber-300">
+            <div className="mt-2 text-right font-serif not-italic text-xs md:text-sm font-bold tracking-wide text-amber-900 dark:text-amber-300">
               {attribution}
             </div>
           )}
@@ -265,7 +276,7 @@ export const DailyReader: React.FC = () => {
       return (
         <h3
           key={idx}
-          className="font-cinzel text-lg md:text-xl font-bold text-amber-950 dark:text-amber-200 pt-4 pb-1"
+          className="font-cinzel text-base sm:text-lg md:text-xl font-bold text-amber-950 dark:text-amber-200 pt-3 sm:pt-4 pb-1"
         >
           {para.replace(/\*\*/g, '')}
         </h3>
@@ -280,23 +291,23 @@ export const DailyReader: React.FC = () => {
   };
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-6 md:py-10" ref={readerContainerRef}>
+    <div className="mx-auto max-w-3xl px-3 sm:px-4 py-4 sm:py-8 md:py-10" ref={readerContainerRef}>
       <HighlightPopover containerRef={readerContainerRef} section={activeSection} />
 
       {/* Top Banner & Navigation metadata */}
-      <div className="flex items-center justify-between border-b border-stone-300/80 pb-4 dark:border-neutral-800 no-print">
-        <div className="flex items-center gap-2">
-          <span className="font-cinzel text-xs font-bold tracking-widest uppercase text-amber-900 dark:text-amber-300">
+      <div className="flex flex-wrap sm:flex-nowrap items-center justify-between gap-2 border-b border-stone-300/80 pb-3 sm:pb-4 dark:border-neutral-800 no-print">
+        <div className="flex items-center gap-2 flex-shrink-0">
+          <span className="font-cinzel text-xs sm:text-sm font-bold tracking-widest uppercase text-amber-900 dark:text-amber-300 whitespace-nowrap">
             Day {dailyEntry.day} of {totalDays}
           </span>
           {isCompleted && (
-            <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2 py-0.5 text-[11px] font-bold text-emerald-900 dark:bg-emerald-950/60 dark:text-emerald-300">
-              <CheckCircle2 className="h-3 w-3" /> Completed
+            <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] sm:text-[11px] font-bold text-emerald-900 dark:bg-emerald-950/60 dark:text-emerald-300">
+              <CheckCircle2 className="h-3 w-3" /> Done
             </span>
           )}
         </div>
 
-        <div className="flex items-center gap-1 sm:gap-2">
+        <div className="flex items-center gap-1 sm:gap-1.5 flex-shrink-0">
           <button
             onClick={handleListenCurrent}
             className={`inline-flex items-center gap-1 rounded-lg border px-2.5 py-1.5 text-xs font-medium transition-colors ${
@@ -307,8 +318,8 @@ export const DailyReader: React.FC = () => {
             title="Listen to current section"
           >
             <Volume2 className="h-3.5 w-3.5" />
-            <span className="hidden sm:inline">
-              {audioState.isPlaying && audioState.currentSection === activeSection ? 'Stop Audio' : 'Listen'}
+            <span className="hidden xs:inline">
+              {audioState.isPlaying && audioState.currentSection === activeSection ? 'Stop' : 'Listen'}
             </span>
           </button>
 
@@ -351,7 +362,7 @@ export const DailyReader: React.FC = () => {
 
           <button
             onClick={handlePrint}
-            className="rounded-lg border border-stone-300 bg-white/80 p-1.5 text-stone-800 hover:bg-amber-100/60 dark:border-neutral-700 dark:bg-neutral-800 dark:text-stone-200 transition-colors"
+            className="hidden sm:inline-flex rounded-lg border border-stone-300 bg-white/80 p-1.5 text-stone-800 hover:bg-amber-100/60 dark:border-neutral-700 dark:bg-neutral-800 dark:text-stone-200 transition-colors"
             title="Print or export PDF for offline devotion"
           >
             <Printer className="h-4 w-4" />
@@ -360,24 +371,26 @@ export const DailyReader: React.FC = () => {
       </div>
 
       {/* Main Title & Theme Header */}
-      <div className="py-6 text-center">
-        <span className="inline-block rounded-full bg-amber-900 text-white dark:bg-amber-950 dark:text-amber-200 px-3.5 py-1 text-xs font-bold uppercase tracking-wider mb-3 shadow-xs">
-          {dailyEntry.theme}
-        </span>
-        <h1 className="font-cinzel text-2xl font-bold tracking-tight sm:text-3xl md:text-4xl text-stone-950 dark:text-amber-100">
+      <div className="py-4 sm:py-6 text-center">
+        {dailyEntry.theme && dailyEntry.theme.trim().toLowerCase() !== dailyEntry.title.trim().toLowerCase() && (
+          <span className="inline-block rounded-full bg-amber-900 text-white dark:bg-amber-950 dark:text-amber-200 px-3.5 py-1 text-xs font-bold uppercase tracking-wider mb-2.5 shadow-xs">
+            {dailyEntry.theme}
+          </span>
+        )}
+        <h1 className="font-cinzel text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight text-stone-950 dark:text-amber-100 leading-snug sm:leading-normal">
           {dailyEntry.title}
         </h1>
       </div>
 
       {/* Epigraph Quote Card */}
       {dailyEntry.scripture_or_quote && (
-        <div className="relative my-4 rounded-xl border border-amber-300/80 bg-amber-100/30 p-5 shadow-xs dark:border-neutral-700 dark:bg-neutral-900/80">
-          <blockquote className="font-serif-reading italic text-stone-900 dark:text-stone-100 text-sm md:text-base leading-relaxed">
-            “{dailyEntry.scripture_or_quote.quote}”
+        <div className="relative my-3 sm:my-5 rounded-xl border border-amber-300/80 bg-amber-100/30 p-4 sm:p-5 shadow-xs dark:border-neutral-700 dark:bg-neutral-900/80">
+          <blockquote className="font-serif-reading italic text-stone-900 dark:text-stone-100 text-xs sm:text-sm md:text-base leading-relaxed">
+            “{cleanFootnotes(dailyEntry.scripture_or_quote.quote)}”
           </blockquote>
           <div className="mt-2.5 flex items-center justify-between">
             <span className="text-xs font-bold text-amber-950 dark:text-amber-300 font-serif">
-              — {dailyEntry.scripture_or_quote.author}
+              — {cleanFootnotes(dailyEntry.scripture_or_quote.author)}
             </span>
             <button
               onClick={handleShareQuote}
@@ -392,43 +405,49 @@ export const DailyReader: React.FC = () => {
       )}
 
       {/* Section Tabs (Meditation vs Assigned Reading vs Prayers) */}
-      <div className="sticky top-16 z-20 my-6 flex rounded-xl border border-stone-300 bg-stone-100/95 p-1 backdrop-blur-md dark:border-neutral-700 dark:bg-neutral-900/95 no-print shadow-sm">
+      <div className="sticky top-14 sm:top-16 z-20 my-4 sm:my-6 flex rounded-xl border border-stone-300 bg-stone-100/95 p-1 backdrop-blur-md dark:border-neutral-700 dark:bg-neutral-900/95 no-print shadow-sm">
         <button
           onClick={() => setActiveSection('meditation')}
-          className={`flex-1 inline-flex items-center justify-center gap-1.5 rounded-lg py-2.5 text-xs md:text-sm transition-all ${
+          className={`flex-1 inline-flex items-center justify-center gap-1 sm:gap-1.5 rounded-lg py-2 sm:py-2.5 text-xs sm:text-sm transition-all ${
             activeSection === 'meditation'
               ? 'bg-amber-800 text-white font-bold shadow-sm dark:bg-amber-600 dark:text-white'
               : 'text-stone-700 font-semibold hover:text-stone-950 dark:text-stone-300 dark:hover:text-white'
           }`}
         >
-          <BookOpen className="h-3.5 w-3.5" />
-          <span>Part I: Meditation</span>
+          <BookOpen className="h-3.5 w-3.5 flex-shrink-0" />
+          <span className="truncate">
+            <span className="hidden sm:inline">Part I: </span>Meditation
+          </span>
         </button>
 
         {dailyEntry.reading && (
           <button
             onClick={() => setActiveSection('reading')}
-            className={`flex-1 inline-flex items-center justify-center gap-1.5 rounded-lg py-2.5 text-xs md:text-sm transition-all ${
+            className={`flex-1 inline-flex items-center justify-center gap-1 sm:gap-1.5 rounded-lg py-2 sm:py-2.5 text-xs sm:text-sm transition-all ${
               activeSection === 'reading'
                 ? 'bg-amber-800 text-white font-bold shadow-sm dark:bg-amber-600 dark:text-white'
                 : 'text-stone-700 font-semibold hover:text-stone-950 dark:text-stone-300 dark:hover:text-white'
             }`}
           >
-            <ScrollText className="h-3.5 w-3.5" />
-            <span className="truncate max-w-[140px] sm:max-w-none">Part II: Reading</span>
+            <ScrollText className="h-3.5 w-3.5 flex-shrink-0" />
+            <span className="truncate">
+              <span className="hidden sm:inline">Part II: </span>Reading
+            </span>
           </button>
         )}
 
         <button
           onClick={() => setActiveSection('prayer')}
-          className={`flex-1 inline-flex items-center justify-center gap-1.5 rounded-lg py-2.5 text-xs md:text-sm transition-all ${
+          className={`flex-1 inline-flex items-center justify-center gap-1 sm:gap-1.5 rounded-lg py-2 sm:py-2.5 text-xs sm:text-sm transition-all ${
             activeSection === 'prayer'
               ? 'bg-amber-800 text-white font-bold shadow-sm dark:bg-amber-600 dark:text-white'
               : 'text-stone-700 font-semibold hover:text-stone-950 dark:text-stone-300 dark:hover:text-white'
           }`}
         >
-          <HeartHandshake className="h-3.5 w-3.5" />
-          <span>Daily Prayers</span>
+          <HeartHandshake className="h-3.5 w-3.5 flex-shrink-0" />
+          <span className="truncate">
+            <span className="hidden sm:inline">Daily </span>Prayers
+          </span>
         </button>
       </div>
 
@@ -529,23 +548,15 @@ export const DailyReader: React.FC = () => {
       </div>
 
       {/* Completion & Next / Prev Day Footer */}
-      <div className="mt-12 border-t border-stone-300/80 pt-6 dark:border-neutral-800 no-print">
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-          <button
-            onClick={() => setCurrentDay(currentDay - 1)}
-            disabled={currentDay <= 1}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl border border-stone-300 bg-white/80 px-4 py-2.5 text-sm font-semibold text-stone-800 hover:bg-stone-100 disabled:opacity-40 disabled:pointer-events-none dark:border-neutral-700 dark:bg-neutral-800 dark:text-stone-200 transition-colors"
-          >
-            <ChevronLeft className="h-4 w-4" />
-            <span>Previous Day</span>
-          </button>
-
+      <div className="mt-10 sm:mt-12 border-t border-stone-300/80 pt-6 dark:border-neutral-800 no-print">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4">
+          {/* Mark Complete button: primary prominence */}
           <button
             onClick={handleToggleComplete}
-            className={`w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold shadow-md transition-all ${
+            className={`w-full sm:order-2 sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold shadow-md transition-all ${
               isCompleted
                 ? 'bg-emerald-700 text-white hover:bg-emerald-800 dark:bg-emerald-600'
-                : 'bg-amber-800 text-white hover:bg-amber-900 dark:bg-amber-600 hover:scale-[1.02]'
+                : 'bg-amber-800 text-white hover:bg-amber-900 dark:bg-amber-600 hover:scale-[1.01]'
             }`}
           >
             {isCompleted ? (
@@ -561,10 +572,31 @@ export const DailyReader: React.FC = () => {
             )}
           </button>
 
+          {/* Previous Day and Next Day: Side-by-side on mobile */}
+          <div className="grid grid-cols-2 gap-2.5 w-full sm:w-auto sm:flex sm:order-1">
+            <button
+              onClick={() => setCurrentDay(currentDay - 1)}
+              disabled={currentDay <= 1}
+              className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-stone-300 bg-white/80 px-3.5 py-2.5 text-xs sm:text-sm font-semibold text-stone-800 hover:bg-stone-100 disabled:opacity-40 disabled:pointer-events-none dark:border-neutral-700 dark:bg-neutral-800 dark:text-stone-200 transition-colors"
+            >
+              <ChevronLeft className="h-4 w-4" />
+              <span>Prev Day</span>
+            </button>
+
+            <button
+              onClick={() => setCurrentDay(currentDay + 1)}
+              disabled={currentDay >= totalDays}
+              className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-stone-300 bg-white/80 px-3.5 py-2.5 text-xs sm:text-sm font-semibold text-stone-800 hover:bg-stone-100 disabled:opacity-40 disabled:pointer-events-none dark:border-neutral-700 dark:bg-neutral-800 dark:text-stone-200 transition-colors sm:hidden"
+            >
+              <span>Next Day</span>
+              <ChevronRight className="h-4 w-4" />
+            </button>
+          </div>
+
           <button
             onClick={() => setCurrentDay(currentDay + 1)}
             disabled={currentDay >= totalDays}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl border border-stone-300 bg-white/80 px-4 py-2.5 text-sm font-semibold text-stone-800 hover:bg-stone-100 disabled:opacity-40 disabled:pointer-events-none dark:border-neutral-700 dark:bg-neutral-800 dark:text-stone-200 transition-colors"
+            className="hidden sm:inline-flex sm:order-3 w-auto items-center justify-center gap-2 rounded-xl border border-stone-300 bg-white/80 px-4 py-2.5 text-sm font-semibold text-stone-800 hover:bg-stone-100 disabled:opacity-40 disabled:pointer-events-none dark:border-neutral-700 dark:bg-neutral-800 dark:text-stone-200 transition-colors"
           >
             <span>Next Day</span>
             <ChevronRight className="h-4 w-4" />
