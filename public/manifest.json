@@ -1,0 +1,17 @@
+{
+  "name": "33-Day Consecration to St. Joseph",
+  "short_name": "St. Joseph 33",
+  "description": "Minimalist, distraction-free reader and devotional companion for the 33-Day Consecration to St. Joseph.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#faf8f5",
+  "theme_color": "#4a2e18",
+  "icons": [
+    {
+      "src": "/st-joseph-tab.png",
+      "sizes": "192x192 512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
