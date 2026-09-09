@@ -1,33 +1,128 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @layer base {
   :root {
     --font-serif: 'Lora', Georgia, Cambria, 'Times New Roman', Times, serif;
     --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     --font-cinzel: 'Cinzel', serif;
+
+    /* Default (Sanctuary) Theme Variables */
+    --bg-page: #faf8f5;
+    --bg-card: #ffffff;
+    --bg-card-alt: #f4efe6;
+    --bg-card-subtle: #fdfbf7;
+    --border-subtle: #e8e0d5;
+    --border-strong: #cbb89d;
+    --text-primary: #1f1b16; /* high contrast deep charcoal/brown */
+    --text-secondary: #423b32; /* clear, readable warm slate */
+    --text-muted: #6e6456;
+    --text-heading: #3d1c06; /* rich deep bronze-mahogany */
+    --gold-accent: #92400e; /* rich deep amber-700, very high contrast */
+    --gold-accent-hover: #78350f;
+    --badge-bg: #f3ebd8;
+    --badge-text: #6b3b0c;
+    --quote-card-bg: #f7f2ea;
+    --quote-card-border: #d4a373;
+    --tab-inactive-bg: #ece5d8;
+    --tab-inactive-text: #574e42;
   }
 
   body {
     min-height: 100vh;
-    transition: background-color 0.25s ease, color 0.25s ease;
+    background-color: var(--bg-page);
+    color: var(--text-primary);
+    transition: background-color 0.2s ease, color 0.2s ease;
   }
 }
 
-/* Theme Classes */
+/* 1. Sanctuary Theme (Clean Alabaster / Warm Church Marble) */
 body.theme-sanctuary {
-  background-color: #faf8f5;
-  color: #26211c;
+  --bg-page: #faf8f5;
+  --bg-card: #ffffff;
+  --bg-card-alt: #f4efe6;
+  --bg-card-subtle: #fdfbf7;
+  --border-subtle: #e8e0d5;
+  --border-strong: #cbb89d;
+  --text-primary: #1f1b16;
+  --text-secondary: #3d352b;
+  --text-muted: #6b6051;
+  --text-heading: #381a05;
+  --gold-accent: #92400e;
+  --gold-accent-hover: #78350f;
+  --badge-bg: #f3ebd8;
+  --badge-text: #6b3b0c;
+  --quote-card-bg: #f5eedf;
+  --quote-card-border: #d4b082;
+  --tab-inactive-bg: #ede4d4;
+  --tab-inactive-text: #574d3f;
 }
 
+/* 2. Sepia Theme (Aged Vellum / Warm Illumination) */
 body.theme-sepia {
-  background-color: #f4ecdf;
-  color: #382c1e;
+  --bg-page: #f4ecdf;
+  --bg-card: #faeedc;
+  --bg-card-alt: #ede1cb;
+  --bg-card-subtle: #fdf6ec;
+  --border-subtle: #dacaba;
+  --border-strong: #c2a37e;
+  --text-primary: #211910; /* maximum readability on vellum */
+  --text-secondary: #3b2d1d;
+  --text-muted: #6e553a;
+  --text-heading: #381b03;
+  --gold-accent: #873e04;
+  --gold-accent-hover: #692e02;
+  --badge-bg: #ebdcc4;
+  --badge-text: #542702;
+  --quote-card-bg: #ede0cb;
+  --quote-card-border: #ba8c5b;
+  --tab-inactive-bg: #e5d6be;
+  --tab-inactive-text: #4a3a29;
 }
 
+/* 3. Vigil Theme (Night Adoration / Candlelight) */
 body.theme-vigil {
-  background-color: #151311;
-  color: #ede5da;
+  --bg-page: #13110f;
+  --bg-card: #1c1915;
+  --bg-card-alt: #26221c;
+  --bg-card-subtle: #181512;
+  --border-subtle: #312b23;
+  --border-strong: #5a4830;
+  --text-primary: #f5eee6;
+  --text-secondary: #ded3c5;
+  --text-muted: #9e8f7c;
+  --text-heading: #fef0c7;
+  --gold-accent: #e59e37;
+  --gold-accent-hover: #f5b041;
+  --badge-bg: #2d2316;
+  --badge-text: #fbd38d;
+  --quote-card-bg: #201b15;
+  --quote-card-border: #6b5536;
+  --tab-inactive-bg: #241f19;
+  --tab-inactive-text: #a89a87;
 }
+
+/* Custom Semantic Utility Classes */
+.bg-theme-page { background-color: var(--bg-page); }
+.bg-theme-card { background-color: var(--bg-card); }
+.bg-theme-card-alt { background-color: var(--bg-card-alt); }
+.bg-theme-card-subtle { background-color: var(--bg-card-subtle); }
+.bg-theme-quote { background-color: var(--quote-card-bg); }
+.bg-theme-badge { background-color: var(--badge-bg); }
+.bg-theme-tab-inactive { background-color: var(--tab-inactive-bg); }
+
+.border-theme-subtle { border-color: var(--border-subtle); }
+.border-theme-strong { border-color: var(--border-strong); }
+.border-theme-quote { border-color: var(--quote-card-border); }
+
+.text-theme-primary { color: var(--text-primary); }
+.text-theme-secondary { color: var(--text-secondary); }
+.text-theme-muted { color: var(--text-muted); }
+.text-theme-heading { color: var(--text-heading); }
+.text-theme-gold { color: var(--gold-accent); }
+.text-theme-badge { color: var(--badge-text); }
+.text-theme-tab-inactive { color: var(--tab-inactive-text); }
 
 /* Custom Typography Utilities */
 .font-cinzel {

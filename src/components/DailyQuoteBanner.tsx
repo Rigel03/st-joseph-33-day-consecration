@@ -25,17 +25,17 @@ export const DailyQuoteBanner: React.FC = () => {
 
   return (
     <div className="mx-auto max-w-3xl px-4 pt-6 no-print">
-      <div className="relative overflow-hidden rounded-2xl border border-amber-200/90 bg-gradient-to-r from-amber-100/40 via-stone-50/50 to-amber-100/40 p-5 shadow-sm dark:border-neutral-800 dark:from-neutral-900/40 dark:via-neutral-900/20 dark:to-neutral-900/40">
-        <div className="flex items-center justify-between border-b border-amber-200/50 pb-2.5 mb-3 dark:border-neutral-800">
-          <div className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-amber-800 dark:text-amber-400">
-            <Sparkles className="h-3.5 w-3.5" />
+      <div className="relative overflow-hidden rounded-2xl border border-amber-300/80 bg-amber-100/30 p-5 shadow-xs dark:border-neutral-700 dark:bg-neutral-900/80">
+        <div className="flex items-center justify-between border-b border-amber-200/80 pb-2.5 mb-3 dark:border-neutral-800">
+          <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-amber-900 dark:text-amber-300">
+            <Sparkles className="h-3.5 w-3.5 text-amber-700 dark:text-amber-400" />
             <span>Today’s Wisdom & Historic Fact</span>
           </div>
 
           <div className="flex items-center gap-1">
             <button
               onClick={() => setShowFact(!showFact)}
-              className="inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-xs font-medium text-stone-600 hover:bg-amber-100 dark:text-stone-300 dark:hover:bg-neutral-800 transition-colors"
+              className="inline-flex items-center gap-1 rounded-lg border border-amber-200/80 bg-white/80 px-2.5 py-1 text-xs font-medium text-stone-800 hover:bg-amber-100/60 dark:border-neutral-700 dark:bg-neutral-800 dark:text-stone-200 transition-colors"
             >
               <Info className="h-3.5 w-3.5 text-amber-700 dark:text-amber-400" />
               <span>{showFact ? 'Show Quote' : 'Show Fact'}</span>
@@ -43,7 +43,7 @@ export const DailyQuoteBanner: React.FC = () => {
 
             <button
               onClick={handleShare}
-              className="rounded-md p-1 text-stone-500 hover:bg-amber-100 dark:text-stone-400 dark:hover:bg-neutral-800 transition-colors"
+              className="rounded-lg border border-amber-200/80 bg-white/80 p-1 text-stone-700 hover:bg-amber-100/60 dark:border-neutral-700 dark:bg-neutral-800 dark:text-stone-200 transition-colors"
               title="Share quote"
             >
               <Share2 className="h-3.5 w-3.5 text-amber-700 dark:text-amber-400" />
@@ -53,19 +53,19 @@ export const DailyQuoteBanner: React.FC = () => {
 
         {showFact ? (
           <div className="animate-in fade-in duration-150">
-            <p className="text-xs font-semibold text-amber-900 dark:text-amber-300 mb-1">
+            <p className="text-xs font-bold text-amber-900 dark:text-amber-300 mb-1">
               Did you know?
             </p>
-            <p className="text-xs md:text-sm text-stone-700 dark:text-stone-300 leading-relaxed font-serif">
+            <p className="text-xs md:text-sm text-stone-900 dark:text-stone-100 leading-relaxed font-serif">
               {quoteItem.fact}
             </p>
           </div>
         ) : (
           <div className="animate-in fade-in duration-150">
-            <blockquote className="font-serif-reading text-xs md:text-sm italic leading-relaxed text-stone-800 dark:text-stone-200">
+            <blockquote className="font-serif-reading text-xs md:text-sm italic leading-relaxed text-stone-900 dark:text-stone-100">
               “{quoteItem.quote}”
             </blockquote>
-            <p className="mt-1.5 text-right text-xs font-semibold text-amber-900 dark:text-amber-300">
+            <p className="mt-1.5 text-right text-xs font-bold text-amber-950 dark:text-amber-300 font-serif">
               — {quoteItem.author}
             </p>
           </div>

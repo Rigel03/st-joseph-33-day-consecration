@@ -28,16 +28,16 @@ export const LitanyView: React.FC<{ compact?: boolean }> = ({ compact = false })
   };
 
   return (
-    <div className={`rounded-xl border p-6 transition-all ${
-      compact ? 'border-amber-200/50 bg-amber-50/30 dark:border-neutral-800 dark:bg-neutral-900/40' : 'border-amber-300/60 bg-amber-50/50 dark:border-neutral-700 dark:bg-neutral-900/60'
+    <div className={`rounded-2xl border p-6 transition-all ${
+      compact ? 'border-amber-300/60 bg-amber-50/50 dark:border-neutral-800 dark:bg-neutral-900/40' : 'border-amber-300/80 bg-amber-100/30 dark:border-neutral-700 dark:bg-neutral-900/70 shadow-xs'
     }`}>
       {/* Header & Controls */}
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-amber-200/60 pb-4 dark:border-neutral-800">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-amber-200/80 pb-4 dark:border-neutral-800">
         <div>
           <h3 className="font-cinzel text-xl font-bold tracking-wide text-amber-950 dark:text-amber-100">
             {lang === 'en' ? litany.title : litany.latinTitle}
           </h3>
-          <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">
+          <p className="text-xs text-stone-600 dark:text-stone-300 mt-0.5 font-medium">
             {litany.description}
           </p>
         </div>
@@ -45,10 +45,10 @@ export const LitanyView: React.FC<{ compact?: boolean }> = ({ compact = false })
         <div className="flex items-center gap-2">
           <button
             onClick={handleListen}
-            className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors ${
+            className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-semibold transition-colors ${
               audioState.isPlaying && audioState.currentSection === 'litany'
-                ? 'border-amber-600 bg-amber-600 text-white'
-                : 'border-amber-300 bg-white text-stone-700 hover:bg-amber-50 dark:border-neutral-700 dark:bg-neutral-800 dark:text-stone-200 dark:hover:bg-neutral-700'
+                ? 'border-amber-700 bg-amber-700 text-white'
+                : 'border-stone-300 bg-white text-stone-800 hover:bg-amber-100/50 dark:border-neutral-700 dark:bg-neutral-800 dark:text-stone-200 dark:hover:bg-neutral-700'
             }`}
             title="Listen to the Litany"
           >
@@ -58,7 +58,7 @@ export const LitanyView: React.FC<{ compact?: boolean }> = ({ compact = false })
 
           <button
             onClick={() => setLang(lang === 'en' ? 'la' : 'en')}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-amber-300 bg-white px-3 py-1.5 text-xs font-medium text-stone-700 hover:bg-amber-50 dark:border-neutral-700 dark:bg-neutral-800 dark:text-stone-200 dark:hover:bg-neutral-700 transition-colors"
+            className="inline-flex items-center gap-1.5 rounded-lg border border-stone-300 bg-white px-3 py-1.5 text-xs font-semibold text-stone-800 hover:bg-amber-100/50 dark:border-neutral-700 dark:bg-neutral-800 dark:text-stone-200 dark:hover:bg-neutral-700 transition-colors"
           >
             <Languages className="h-3.5 w-3.5 text-amber-700 dark:text-amber-400" />
             <span>{lang === 'en' ? 'Latin' : 'English'}</span>
@@ -67,29 +67,29 @@ export const LitanyView: React.FC<{ compact?: boolean }> = ({ compact = false })
       </div>
 
       {/* Litany Invocations */}
-      <div className="mt-4 space-y-2 max-h-[500px] overflow-y-auto pr-2 divide-y divide-amber-100/50 dark:divide-neutral-800/60">
+      <div className="mt-4 space-y-2 max-h-[500px] overflow-y-auto pr-2 divide-y divide-amber-200/50 dark:divide-neutral-800/60">
         {litany.items.map((item, idx) => {
           const isChecked = !!checkedIndices[idx];
           return (
             <div
               key={idx}
               onClick={() => toggleCheck(idx)}
-              className={`flex items-center justify-between py-2 px-2.5 rounded-lg cursor-pointer transition-colors ${
+              className={`flex items-center justify-between py-2.5 px-3 rounded-xl cursor-pointer transition-colors ${
                 isChecked
-                  ? 'bg-amber-100/50 text-stone-400 dark:bg-neutral-800/40 dark:text-stone-500'
-                  : 'hover:bg-amber-100/30 dark:hover:bg-neutral-800/30'
+                  ? 'bg-amber-200/40 text-stone-400 dark:bg-neutral-800/40 dark:text-stone-500'
+                  : 'hover:bg-amber-200/30 dark:hover:bg-neutral-800/40'
               }`}
             >
-              <span className={`text-sm ${isChecked ? 'line-through' : 'font-medium text-stone-800 dark:text-stone-200'}`}>
+              <span className={`text-sm ${isChecked ? 'line-through opacity-60' : 'font-semibold text-stone-950 dark:text-stone-100'}`}>
                 {lang === 'en' ? item.invocation : item.latin}
               </span>
               <div className="flex items-center gap-2">
-                <span className="text-xs font-serif italic text-amber-800 dark:text-amber-400">
+                <span className="text-xs font-serif font-bold italic text-amber-950 dark:text-amber-300">
                   {lang === 'en' ? item.response : item.latinResponse}
                 </span>
                 <CheckCircle2
                   className={`h-4 w-4 transition-colors ${
-                    isChecked ? 'text-amber-600 dark:text-amber-500' : 'text-stone-300 dark:text-stone-700'
+                    isChecked ? 'text-emerald-700 dark:text-emerald-400' : 'text-stone-300 dark:text-stone-700'
                   }`}
                 />
               </div>
@@ -98,13 +98,13 @@ export const LitanyView: React.FC<{ compact?: boolean }> = ({ compact = false })
         })}
 
         {/* Lamb of God */}
-        <div className="pt-3 mt-3 border-t border-amber-200/60 dark:border-neutral-800 space-y-1.5">
+        <div className="pt-3 mt-3 border-t border-amber-200/80 dark:border-neutral-800 space-y-1.5">
           {litany.lambOfGod.map((item, idx) => (
             <div key={`lamb-${idx}`} className="flex items-center justify-between py-1.5 px-2 text-xs">
-              <span className="text-stone-700 dark:text-stone-300 italic">
+              <span className="text-stone-900 dark:text-stone-200 italic font-medium">
                 {lang === 'en' ? item.invocation : item.latin}
               </span>
-              <span className="font-semibold text-amber-900 dark:text-amber-300">
+              <span className="font-bold text-amber-950 dark:text-amber-300">
                 {lang === 'en' ? item.response : item.latinResponse}
               </span>
             </div>
@@ -112,19 +112,19 @@ export const LitanyView: React.FC<{ compact?: boolean }> = ({ compact = false })
         </div>
 
         {/* Versicle & Response */}
-        <div className="pt-3 text-xs space-y-1 text-stone-700 dark:text-stone-300 bg-amber-100/30 dark:bg-neutral-800/30 p-2.5 rounded-lg">
+        <div className="pt-3 text-xs space-y-1.5 text-stone-950 dark:text-stone-100 bg-amber-100/50 dark:bg-neutral-800/50 p-3 rounded-xl border border-amber-200/60 dark:border-neutral-700">
           <p>
-            <span className="font-bold text-amber-800 dark:text-amber-400">V. </span>
+            <span className="font-bold text-amber-900 dark:text-amber-300">V. </span>
             {lang === 'en' ? litany.versicle.v : litany.versicle.latinV}
           </p>
           <p>
-            <span className="font-bold text-amber-800 dark:text-amber-400">R. </span>
+            <span className="font-bold text-amber-900 dark:text-amber-300">R. </span>
             {lang === 'en' ? litany.versicle.r : litany.versicle.latinR}
           </p>
         </div>
 
         {/* Closing Collect */}
-        <div className="pt-3 text-xs leading-relaxed text-stone-700 dark:text-stone-300 italic">
+        <div className="pt-3 text-xs md:text-sm leading-relaxed text-stone-900 dark:text-stone-200 font-serif italic">
           {lang === 'en' ? litany.closingPrayer.text : litany.closingPrayer.latin}
         </div>
       </div>

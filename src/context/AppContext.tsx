@@ -130,9 +130,16 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const [shareData, setShareData] = useState<{ quote?: string; author?: string; title?: string } | null>(null);
 
-  // Sync theme to body class
+  // Sync theme to body and root class
   useEffect(() => {
     document.body.className = `theme-${settings.theme}`;
+    if (settings.theme === 'vigil') {
+      document.documentElement.classList.add('dark');
+      document.body.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      document.body.classList.remove('dark');
+    }
   }, [settings.theme]);
 
   // Set current day and update last read
